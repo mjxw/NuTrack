@@ -40,10 +40,10 @@
     <h1 class="title">Register
       <div class="close"></div>
     </h1>
-    <form>
+    <form method = "POST" action = "/register">
       <div class="input-container">
-        <input type="text" id="Username" required="required"/>
-        <label for="Username">Username</label>
+        <input type="text" id="Email" name= "email" required="required"/>
+        <label for="email">Email</label>
         <div class="bar"></div>
       </div>
       <div class="input-container">
@@ -52,17 +52,23 @@
         <div class="bar"></div>
       </div>
       <div class="input-container">
-        <input type="password" id="Repeat Password" required="required"/>
+        <input type="password" id="Repeat Password" name= "pass" required="required"/>
         <label for="Repeat Password">Repeat Password</label>
         <div class="bar"></div>
       </div>
 
       <div class = "input-container">
-
-          <input type="radio" name="type" value="client"> Client
-          <input type="radio" name="type" value="user"> User
-          <input type="radio" name="type" value="trainer"> Trainer
-
+        <div class = "account-type">
+          <div class = "client">
+            <input type="radio" id="client" name="type" value="client" required= "required"> Client
+          </div>
+          <div class = "user">
+            <input type="radio" id="user" name="type" value="user" required= "required"> User
+          </div>
+          <div class = "trainer">
+            <input type="radio" id="trainer" name="type" value="trainer" required="required"> Trainer
+          </div>
+        </div>
       </div>
 
       <div class="button-container">

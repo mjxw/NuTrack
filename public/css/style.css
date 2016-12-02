@@ -7,6 +7,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.account-type {
+    display:inline-flex;
+    color: white;
+    font-family: 'RobotoDraft', 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
 /* Pen Title */
 .pen-title {
   padding: 50px 0;
