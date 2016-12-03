@@ -192,6 +192,18 @@ app.post('/clientSettings', function(req, res){
 
 });
 
+app.get('/clientDashboard', function(req, res){
+
+  var data = {
+    first: 'Matt',
+    last: 'Wu'
+  };
+
+  res.render('template_index.ejs', data);
+  console.log("sent ejs");
+
+});
+
 app.listen(5580, function(){
   console.log('Server started on Port 5580...');
 });
