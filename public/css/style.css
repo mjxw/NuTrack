@@ -46,6 +46,14 @@ body {
   width: 100%;
   margin: 0 auto 100px;
 }
+
+.settings > .container {
+  position: relative;
+  margin: 0 auto 100px;
+  width: 800%;
+  max-width: 400%;
+}
+
 .container.active .card:first-child {
   background: #f2f2f2;
   margin: 0 15px;

@@ -1,7 +1,7 @@
 var randomScalingFactor = function(){ return Math.round(Math.random()*1000)};
-	
+
 	var lineChartData = {
-			labels : ["January","February","March","April","May","June","July"],
+			labels : ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
 			datasets : [
 				{
 					label: "My First dataset",
@@ -26,9 +26,9 @@ var randomScalingFactor = function(){ return Math.round(Math.random()*1000)};
 			]
 
 		}
-		
+
 	var barChartData = {
-			labels : ["January","February","March","April","May","June","July"],
+			labels : ["test","February","March","April","May","June","July"],
 			datasets : [
 				{
 					fillColor : "rgba(220,220,220,0.5)",
@@ -45,7 +45,7 @@ var randomScalingFactor = function(){ return Math.round(Math.random()*1000)};
 					data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
 				}
 			]
-	
+
 		}
 
 	var pieData = [
@@ -75,7 +75,7 @@ var randomScalingFactor = function(){ return Math.round(Math.random()*1000)};
 				}
 
 			];
-			
+
 	var doughnutData = [
 					{
 						value: 300,
@@ -101,7 +101,7 @@ var randomScalingFactor = function(){ return Math.round(Math.random()*1000)};
 						highlight: "#f6495f",
 						label: "Red"
 					}
-	
+
 				];
 
 window.onload = function(){
@@ -119,5 +119,5 @@ window.onload = function(){
 	var chart4 = document.getElementById("pie-chart").getContext("2d");
 	window.myPie = new Chart(chart4).Pie(pieData, {responsive : true
 	});
-	
+
 };

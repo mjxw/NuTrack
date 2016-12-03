@@ -6,6 +6,8 @@ var mysql = require('mysql');
 
 var app = express();
 
+var account_id = null;
+
 var connection = mysql.createConnection({
   host     : 'vergil.u.washington.edu',
   user     : 'root',
@@ -57,10 +59,15 @@ app.get('/trainerDashboard', function(req, res){
   res.render('trainerDash.ejs');
 });
 
+app.get('/profile', function(req, res) {
+  res.render('profile.ejs');
+});
+
 // Login page
 app.post('/login', function(req, res){
   var email = req.body.email;
   var pass = req.body.pass;
+
   console.log("login form submitted");
   console.log("user entered: " + email);
   console.log("user entered: " + pass);
@@ -77,15 +84,26 @@ app.post('/login', function(req, res){
 
     // If user is found
     if (rows.length) {
+      account_id = rows[0].id;
       console.log('successful login');
-      console.log(rows[0].type);
-      if (rows[0].type == 'user') {
+      console.log('user logged in as a: ' + rows[0].type);
+      console.log('user id is: ' + account_id);
+
+      // Redirect to appropriate dashboard view
+      if (rows[0].type == 'User') {
+        console.log('you are a user');
         res.redirect('/userDashboard');
-      } else if (rows[0].type == 'client') {
+      } else if (rows[0].type == 'Client') {
+        console.log('you are a client');
         res.redirect('/clientDashboard');
-      } else if (rows[0].type == 'trainer') {
+      } else if (rows[0].type == 'Trainer') {
+        console.log('you are a trainer');
         res.redirect('/trainerDashboard');
       }
+
+
+
+      // Login unsuccessful
     } else {
       console.log('failed login');
       res.send('The email and or password you submitted was not found');
@@ -98,17 +116,20 @@ app.post('/register', function(req, res){
   var email = req.body.email;
   var pass = req.body.pass;
   var type = req.body.type;
+
   console.log("registration form submitted")
   console.log("user entered " + email);
   console.log("user entered " + pass);
   console.log("user entered " + type);
 
 
-  var query = "INSERT INTO Accounts(type, email, password) " +
+  var registration_query = "INSERT INTO Accounts(type, email, password) " +
               "VALUES (" + "'" + type + "', " + "'" + email + "', " + "'" + pass + "')";
 
 
-  connection.query(query, function (err, rows, fields){
+
+
+  connection.query(registration_query, function (err, rows, fields){
 
 
     if (err) {
@@ -117,7 +138,54 @@ app.post('/register', function(req, res){
     } else {
       console.log(rows);
       console.log('successful registration');
+
+      var id_transfer_query = "INSERT INTO  " + type + " (Accounts_id) " +
+                  "VALUES (" + rows.insertId + ")";
+
+                  // console.log(id_transfer_query);
+
+      connection.query(id_transfer_query, function(err, rows, fields){
+        if (err) {
+          console.log(err);
+          res.send('There is something wrong with your registration, please email us at matthewjwu@gmail.com');
+        } else {
+          console.log(rows);
+          console.log('successful id transfer');
+        }
+      });
       res.redirect('/');
+    }
+  });
+});
+
+// User settings
+app.post('/clientSettings', function(req, res){
+  var fname = req.body.first_name;
+  var lname = req.body.last_name;
+  var age = req.body.age;
+  var weight = req.body.weight;
+  var height = req.body.height;
+
+  if (!account_id) {
+    res.send('Please log in and try again, we have lost your connection with your account id');
+  }
+  console.log('user entered: ' + fname);
+  console.log('user entered: ' + lname);
+  console.log('user entered: ' + age);
+  console.log('user entered: ' + weight);
+  console.log('user entered: ' + height);
+  console.log('on account id: ' + account_id);
+
+  var personal_info_query = "UPDATE Client SET fname = '" + fname + "', lname = '" + lname + "', age = " + age + ", weight = " + weight + ", height = " + height + " " +
+              " WHERE Client.Accounts_id = " + account_id + "";
+
+  connection.query(personal_info_query, function(err, rows, fields){
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(rows);
+      console.log('updated personal info for account id: ' + account_id);
+      res.redirect('/clientDashboard');
     }
   });
 
