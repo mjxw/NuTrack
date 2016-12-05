@@ -33,11 +33,15 @@
 				<a class="navbar-brand" href="#"><span>Nu</span>Track</a>
 				<ul class="user-menu">
 					<li class="dropdown pull-right">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> <%= first %> <span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> <% if (fname) { %>
+																																																																														 <%= fname %>
+																																																																												<% } else { %>
+																																																																														User
+																																																																												<% } %> <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="/profile"><svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg> Profile</a></li>
 							<li><a href="#"><svg class="glyph stroked gear"><use xlink:href="#stroked-gear"></use></svg> Settings</a></li>
-							<li><a href="#"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li>
+							<li><a href="/"><svg class="glyph stroked cancel"><use xlink:href="#stroked-cancel"></use></svg> Logout</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -110,7 +114,7 @@
 							<svg class="glyph stroked bag"><use xlink:href="#stroked-bag"></use></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">120/x</div>
+							<div class="large">0/3 L</div>
 							<div class="text-muted">Water</div>
 						</div>
 					</div>
@@ -123,7 +127,11 @@
 							<svg class="glyph stroked empty-message"><use xlink:href="#stroked-empty-message"></use></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">52/x</div>
+							<div class="large"><% if (age && weight && height) { %>
+								               <p>0/</p><%= fat %> g
+													<% } else { %>
+													    <p>0/?</p>
+													<% } %></div>
 							<div class="text-muted">Fats</div>
 						</div>
 					</div>
@@ -136,7 +144,11 @@
 							<svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">24/x</div>
+							<div class="large"><% if (age && weight && height) { %>
+								               <p>0/</p><%= protein %> g
+													<% } else { %>
+													    <p>0/?</p>
+													<% } %></div>
 							<div class="text-muted">Protein</div>
 						</div>
 					</div>
@@ -149,7 +161,11 @@
 							<svg class="glyph stroked app-window-with-content"><use xlink:href="#stroked-app-window-with-content"></use></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">25/x</div>
+							<div class="large"><% if (age && weight && height) { %>
+								               <p>0/</p><%= carb %> g
+													<% } else { %>
+													    <p>0/?</p>
+													<% } %></div>
 							<div class="text-muted">Carbs</div>
 						</div>
 					</div>
@@ -162,7 +178,11 @@
 							<svg class="glyph stroked bag"><use xlink:href="#stroked-bag"></use></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">1200/x</div>
+							<div class="large"><% if (age && weight && height) { %>
+								               <p>0/</p><%= cal %>
+													<% } else { %>
+													    <p>0/?</p>
+													<% } %></div>
 							<div class="text-muted">Calories</div>
 						</div>
 					</div>
@@ -175,7 +195,11 @@
 							<svg class="glyph stroked empty-message"><use xlink:href="#stroked-empty-message"></use></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">23</div>
+							<div class="large"> <% if (age) { %>
+													    <%= age %>
+													<% } else { %>
+													    <p>?</p>
+													<% } %></div>
 							<div class="text-muted">Age</div>
 						</div>
 					</div>
@@ -188,7 +212,11 @@
 							<svg class="glyph stroked male-user"><use xlink:href="#stroked-male-user"></use></svg>
 						</div>
 						<div class="col-sm-9 col-lg-7 widget-right">
-							<div class="large">69 lbs</div>
+							<div class="large"><% if (weight) { %>
+													    <%= weight %>
+													<% } else { %>
+													    <p>?</p>
+													<% } %>kg </div>
 							<div class="text-muted">Weight</div>
 						</div>
 					</div>
@@ -201,7 +229,11 @@
               <svg class="glyph stroked app-window-with-content"><use xlink:href="#stroked-app-window-with-content"></use></svg>
             </div>
             <div class="col-sm-9 col-lg-7 widget-right">
-              <div class="large">5'7''</div>
+              <div class="large"><% if (height) { %>
+													    <%= height %>
+													<% } else { %>
+													    <p>?</p>
+													<% } %>cm </div>
               <div class="text-muted">Height</div>
             </div>
           </div>

@@ -48,7 +48,34 @@ app.get('/', function(req, res){
 });
 
 app.get('/clientDashboard', function(req, res){
-  res.render('template_index.ejs');
+  var username_query = "SELECT * FROM Client WHERE Accounts_id = " + account_id + " ";
+  connection.query(username_query, (err,rows)=> {
+    // console.log(rows[0]);
+
+
+    // Calculate macros
+    var cal = 66.5 + (13.8 * rows[0].weight) + (5.0 * rows[0].height) - (6.8 * rows[0].age);
+    var protein = Math.round(((0.8 * rows[0].weight)/4) * 10) / 10;
+    var fat = Math.round(((0.3 * cal)/9) * 10) / 10;
+    var carb = Math.round(((0.6 * cal)/4) * 10) / 10;
+
+    var clientObject = {
+      fname: rows[0].fname,
+      age: rows[0].age,
+      weight: rows[0].weight,
+      height: rows[0].height,
+      cal: cal,
+      protein: protein,
+      fat: fat,
+      carb: carb
+    }
+    if (err) {
+      console.log(err);
+      res.render('/template_index.ejs',clientObject);
+    } else {
+      res.render('template_index.ejs', clientObject);
+    }
+  });
 });
 
 app.get('/userDashboard', function(req, res){
@@ -192,17 +219,6 @@ app.post('/clientSettings', function(req, res){
 
 });
 
-app.get('/clientDashboard', function(req, res){
-
-  var data = {
-    first: 'Matt',
-    last: 'Wu'
-  };
-
-  res.render('template_index.ejs', data);
-  console.log("sent ejs");
-
-});
 
 app.listen(5580, function(){
   console.log('Server started on Port 5580...');
