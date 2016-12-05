@@ -5,8 +5,8 @@ var path = require('path');
 var mysql = require('mysql');
 
 var app = express();
-
 var account_id = null;
+var userType_id = null;
 
 var connection = mysql.createConnection({
   host     : 'vergil.u.washington.edu',
@@ -95,6 +95,7 @@ app.post('/login', function(req, res){
   var email = req.body.email;
   var pass = req.body.pass;
 
+
   console.log("login form submitted");
   console.log("user entered: " + email);
   console.log("user entered: " + pass);
@@ -127,9 +128,6 @@ app.post('/login', function(req, res){
         console.log('you are a trainer');
         res.redirect('/trainerDashboard');
       }
-
-
-
       // Login unsuccessful
     } else {
       console.log('failed login');
@@ -150,15 +148,12 @@ app.post('/register', function(req, res){
   console.log("user entered " + type);
 
 
+// Registration section: create account with type, email, pass. Transfers IDs appropriately accross tables
+// and creates food diary per account
   var registration_query = "INSERT INTO Accounts(type, email, password) " +
               "VALUES (" + "'" + type + "', " + "'" + email + "', " + "'" + pass + "')";
 
-
-
-
   connection.query(registration_query, function (err, rows, fields){
-
-
     if (err) {
       console.log(err);
       res.send('There is something wrong with your registration, please email us at matthewjwu@gmail.com');
@@ -166,19 +161,55 @@ app.post('/register', function(req, res){
       console.log(rows);
       console.log('successful registration');
 
-      var id_transfer_query = "INSERT INTO  " + type + " (Accounts_id) " +
-                  "VALUES (" + rows.insertId + ")";
+      var getAccountID_query = "SELECT * FROM Accounts WHERE Accounts.email = '" + email + "' AND Accounts.password = '" + pass + "'";
 
-                  // console.log(id_transfer_query);
-
-      connection.query(id_transfer_query, function(err, rows, fields){
+      connection.query(getAccountID_query, function(err, rows, fields){
         if (err) {
           console.log(err);
           res.send('There is something wrong with your registration, please email us at matthewjwu@gmail.com');
         } else {
           console.log(rows);
-          console.log('successful id transfer');
+          console.log('got Account ID: ' + rows[0].id);
+          account_id = rows[0].id;
+
+          var id_transfer_query = "INSERT INTO  " + type + " (Accounts_id) " +
+                      "VALUES (" + account_id + ")";
+
+          connection.query(id_transfer_query, function(err, rows, fields){
+            if (err) {
+              console.log(err);
+              res.send('There is something wrong with your registration, please email us at matthewjwu@gmail.com');
+            } else {
+              console.log(rows);
+              console.log('successful id transfer');
+            }
+          });
         }
+
+        var getID_query = "SELECT * FROM " + type + " WHERE Accounts_id = " + account_id + "";
+
+        connection.query(getID_query, function(err, rows, fields){
+          if (err) {
+            console.log(err);
+            res.send('There is something wrong with your registration, please email us at matthewjwu@gmail.com');
+          } else {
+            console.log(rows);
+            userType_id = rows[0].id;
+            console.log('got user type id: ' + userType_id);
+
+            var createDiary_query = "INSERT INTO Food_Diary(" + type +"_id) VALUES (" + userType_id + ")";
+
+            connection.query(createDiary_query, function(err, rows, fields){
+              if (err) {
+                console.log(err);
+                res.send('There is something wrong with your registration, please email us at matthewjwu@gmail.com');
+              } else {
+                console.log(rows);
+                console.log('created diary for ' + type + ' id ' + userType_id);
+              }
+            });
+          }
+        });
       });
       res.redirect('/');
     }
