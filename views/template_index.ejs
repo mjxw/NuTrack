@@ -214,7 +214,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-default">
-					<div class="panel-heading">Site Traffic Overview</div>
+					<div class="panel-heading">Calories Overview</div>
 					<div class="panel-body">
 						<div class="canvas-wrapper">
 							<canvas class="main-chart" id="line-chart" height="200" width="600"></canvas>
@@ -270,12 +270,9 @@
 					<div class="panel-heading" id="accordion"><svg class="glyph stroked two-messages"><use xlink:href="#stroked-two-messages"></use></svg> Food Bank</div>
 					<div class="panel-body">
 						<ul>
-							<li class="left clearfix">
+							<div class="foodbank">
 
-								<!-- IMAGE PLACE HOLDER -->
-								<!-- <span class="chat-img pull-left">
-									<img src="http://placehold.it/80/30a5ff/fff" alt="User Avatar" class="img-circle" />
-								</span> -->
+							<!-- <li class="left clearfix">
 								<div class="chat-body clearfix">
 									<div class="header">
 										<strong class="primary-font">Apple</strong> <small class="text-muted"></small>
@@ -284,49 +281,8 @@
 										Calories: 100 Fats: 10g Protein: 1g Carbs: 100g
 									</p>
 								</div>
-							</li>
-
-							<li class="left clearfix">
-								<div class="chat-body clearfix">
-									<div class="header">
-										<strong class="primary-font">Apple</strong> <small class="text-muted"></small>
-									</div>
-									<p>
-										Calories: 100 Fats: 10g Protein: 1g Carbs: 100g
-									</p>
-								</div>
-							</li>
-							<li class="left clearfix">
-								<div class="chat-body clearfix">
-									<div class="header">
-										<strong class="primary-font">Apple</strong> <small class="text-muted"></small>
-									</div>
-									<p>
-										Calories: 100 Fats: 10g Protein: 1g Carbs: 100g
-									</p>
-								</div>
-							</li>
-							<li class="left clearfix">
-								<div class="chat-body clearfix">
-									<div class="header">
-										<strong class="primary-font">Apple</strong> <small class="text-muted"></small>
-									</div>
-									<p>
-										Calories: 100 Fats: 10g Protein: 1g Carbs: 100g
-									</p>
-								</div>
-							</li>
-							<li class="left clearfix">
-								<div class="chat-body clearfix">
-									<div class="header">
-										<strong class="primary-font">Apple</strong> <small class="text-muted"></small>
-									</div>
-									<p>
-										Calories: 100 Fats: 10g Protein: 1g Carbs: 100g
-									</p>
-								</div>
-							</li>
-						</ul>
+							</li> -->
+						</div>
 					</div>
 
 
@@ -442,10 +398,15 @@
 					</div>
 					<div class="panel-footer">
 						<div class="input-group">
-							<input id="btn-input" type="text" class="form-control input-md" placeholder="Add new task" />
+							<!-- <input id="btn-input" class="form-control input-md" placeholder="What'd you eat today?" /> -->
+							<form method = "POST" action = "/clientDashboard">
 							<span class="input-group-btn">
+								<select class = "form-control" name = "selected">
+								</select>
+
 								<button class="btn btn-primary btn-md" id="btn-todo">Add</button>
 							</span>
+						</form>
 						</div>
 					</div>
 				</div>
@@ -462,22 +423,48 @@
 	<script src="js/easypiechart-data.js"></script>
 	<script src="js/bootstrap-datepicker.js"></script>
 	<script>
-		$('#calendar').datepicker({
+		// $('#calendar').datepicker({
+		// });
+		//
+		// !function ($) {
+		//     $(document).on("click","ul.nav li.parent > a > span.icon", function(){
+		//         $(this).find('em:first').toggleClass("glyphicon-minus");
+		//     });
+		//     $(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
+		// }(window.jQuery);
+		//
+		// $(window).on('resize', function () {
+		//   if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+		// })
+		// $(window).on('resize', function () {
+		//   if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+		// })
+		$(function() {
+
+			var foods = <%- JSON.stringify(foods) %>;
+
+			for (i = 0; i < foods.length; i++) {
+				var htmlStr = "";
+				htmlStr += "<li class='left clearfix'>";
+				htmlStr += "<div class= 'chat-body clearfix'>";
+				htmlStr += "<div class= 'header'>";
+				htmlStr += "<strong class= 'primary-font'>"+ foods[i].name +"</strong> <small class='text-muted'></small>";
+				htmlStr += "</div>";
+				htmlStr += "<p>";
+				htmlStr += "Calories: "+ foods[i].cal + "  Fats: " + foods[i].fat + "  Protein " + foods[i].protein + "  Carbs: " + foods[i].carb + "";
+				htmlStr += "</p>";
+				htmlStr += "</div>";
+				htmlStr += "</li>";
+
+				var diaryStr = "";
+				diaryStr += "<option value=" + foods[i].name +">" + foods[i].name + "</option>";
+				$('.form-control').append(diaryStr);
+				$('.foodbank').append(htmlStr);
+			}
+
+
+
 		});
-
-		!function ($) {
-		    $(document).on("click","ul.nav li.parent > a > span.icon", function(){
-		        $(this).find('em:first').toggleClass("glyphicon-minus");
-		    });
-		    $(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
-		}(window.jQuery);
-
-		$(window).on('resize', function () {
-		  if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
-		})
-		$(window).on('resize', function () {
-		  if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
-		})
 	</script>
 </body>
 

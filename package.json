@@ -4,14 +4,13 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "body-parser": "*",
     "ejs": "^2.5.2",
     "express": "*",
     "mysql": "*"
-
   },
   "repository": {
     "type": "git",

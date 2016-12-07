@@ -41,6 +41,7 @@ app.use('/css', express.static(path.join(__dirname + '/public/css')));
 app.use('/js', express.static(path.join(__dirname + '/public/js')));
 app.use('/fonts', express.static(path.join(__dirname + '/public/fonts')));
 app.use('/tables', express.static(path.join(__dirname + '/public/tables')));
+app.use('/node_modules', express.static(path.join(__dirname + '/jquery/dist')));
 
 // Handling routes
 app.get('/', function(req, res){
@@ -48,33 +49,95 @@ app.get('/', function(req, res){
 });
 
 app.get('/clientDashboard', function(req, res){
+  // var username_query = "SELECT * FROM Client WHERE Accounts_id = " + account_id + " ";
+  // connection.query(username_query, (err,rows)=> {
+  //   // Calculate macros
+  //   var cal = 66.5 + (13.8 * rows[0].weight) + (5.0 * rows[0].height) - (6.8 * rows[0].age);
+  //   var protein = Math.round(((0.8 * rows[0].weight)/4) * 10) / 10;
+  //   var fat = Math.round(((0.3 * cal)/9) * 10) / 10;
+  //   var carb = Math.round(((0.6 * cal)/4) * 10) / 10;
+  //
+  //   var data = {
+  //     fname: rows[0].fname,
+  //     age: rows[0].age,
+  //     weight: rows[0].weight,
+  //     height: rows[0].height,
+  //     cal: cal,
+  //     protein: protein,
+  //     fat: fat,
+  //     carb: carb
+  //   }
+  //   if (err) {
+  //     console.log(err);
+  //     res.render('template_index.ejs',data);
+  //   } else {
+  //     res.render('template_index.ejs', data);
+  //   }
+  // });
+  //
+  // //Food Bank section
+  // var foodBank_query = "SELECT * FROM Food_Info";
+  // connection.query(foodBank_query, (err,rows)=> {
+  //
+  //   var foodArray = []
+  //   for (i = 0; i < rows.length; i++) {
+  //     foodArray[i] = rows[i];
+  //   }
+  //   console.log(foodArray);
+  //
+  //   var foodObject = {
+  //     foods: foodArray
+  //   }
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //     res.render('template_index.ejs', foodObject);
+  // });
+
   var username_query = "SELECT * FROM Client WHERE Accounts_id = " + account_id + " ";
-  connection.query(username_query, (err,rows)=> {
-    // console.log(rows[0]);
+  var usernameQueryObj = connection.query(username_query, (err, rows) =>{
+    if (err) {
+      console.log(err);
+      res.send(err);
+    }
+
+    var fname = rows[0].fname;
+    var age = rows[0].age;
+    var weight = rows[0].weight;
+    var height = rows[0].height;
 
 
-    // Calculate macros
-    var cal = 66.5 + (13.8 * rows[0].weight) + (5.0 * rows[0].height) - (6.8 * rows[0].age);
-    var protein = Math.round(((0.8 * rows[0].weight)/4) * 10) / 10;
+    var cal = Math.round(66.5 + (13.8 * weight) + (5.0 * height) - (6.8 * age)) * 10 / 10;
+    var protein = Math.round(((0.8 * weight)/4) * 10) / 10;
     var fat = Math.round(((0.3 * cal)/9) * 10) / 10;
     var carb = Math.round(((0.6 * cal)/4) * 10) / 10;
 
-    var clientObject = {
-      fname: rows[0].fname,
-      age: rows[0].age,
-      weight: rows[0].weight,
-      height: rows[0].height,
-      cal: cal,
-      protein: protein,
-      fat: fat,
-      carb: carb
-    }
-    if (err) {
-      console.log(err);
-      res.render('/template_index.ejs',clientObject);
-    } else {
-      res.render('template_index.ejs', clientObject);
-    }
+    var foodBank_query = "SELECT * FROM Food_Info";
+
+    var foodBankQueryObj = connection.query(foodBank_query, (err, rows) => {
+      if (err) {
+        console.log(err);
+        res.send(err);
+      }
+      var foodArray = []
+      for (i = 0; i < rows.length; i++) {
+        foodArray[i] = rows[i];
+      }
+
+      var data = {
+        fname : fname,
+        age : age,
+        weight: weight,
+        height: height,
+        cal: cal,
+        protein: protein,
+        fat: fat,
+        carb: carb,
+        foods: foodArray
+      };
+      res.render('template_index.ejs', data);
+      console.log(data);
+    });
   });
 });
 
@@ -246,8 +309,51 @@ app.post('/clientSettings', function(req, res){
       res.redirect('/clientDashboard');
     }
   });
+});
+
+app.post('/clientDashboard',function(req,res){
+  var name = req.body.selected;
+  console.log('selected: ' + name);
+  console.log("Account ID:" + account_id);
+  var typeID = null;
+  var diaryID = null;
+  var typeID_query = "SELECT * FROM Client WHERE Accounts_id = " + account_id + "";
 
 
+  connection.query(typeID_query, function(err, rows, fields){
+    if(err) {
+      console.log(err);
+    } else {
+      console.log(rows);
+      typeID = rows[0].id;
+      console.log('type ID: ' + typeID);
+
+      var diaryID_query = "SELECT * FROM Food_Diary WHERE Client_id = " + typeID + "";
+
+      connection.query(diaryID_query, function(err, rows, fields){
+        if(err) {
+          console.log(err);
+        } else {
+          console.log(rows);
+          diaryID = rows[0].id;
+          console.log('diary ID: ' + diaryID);
+
+          var addFood_query = " INSERT INTO Food(food_name, FoodInfo_name, FoodDiary_id) VALUES('"+ name +"', '"+ name +"', "+ typeID + " )";
+
+          connection.query(addFood_query, function(err, rows, fields){
+            if(err) {
+              console.log(err);
+            } else {
+              console.log(rows);
+              console.log('added ' + name + 'to client ID: ' + typeID);
+            }
+          });
+        }
+      });
+    }
+  });
+
+  res.redirect('/clientDashboard');
 });
 
 
